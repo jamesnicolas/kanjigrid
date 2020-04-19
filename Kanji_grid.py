@@ -205,6 +205,7 @@ class KanjiGrid:
         else:
             cols = config.thin
         self.html  = "<!doctype html><html><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
+        self.html += "<link rel=\"stylesheet\" href=\"css/index.css\"></link>"
         self.html += "<style type=\"text/css\">body{background-color:#FFF;}.maintable{width:85%%;}.maintable,.missingtable{margin-left:auto;margin-right:auto;display:grid;grid-template-columns:repeat(%s, 1fr);text-align:left;}.maintable > *,.missingtable > *{text-align:center;vertical-align:top;margin:1px;line-height:1.5em;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>" % cols
         if config.autothinwide:
              self.html += "<style type=\"text/css\">.maintable,.missingtable{display:block;font-size:0px}.maintable > *,.missingtable > *{display:inline-block;font-size:initial;width:1.5em;}</style>"
