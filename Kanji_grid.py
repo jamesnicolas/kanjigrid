@@ -11,6 +11,7 @@ import time
 import types
 import unicodedata
 import urllib.parse
+import json
 from functools import reduce
 
 from anki.utils import ids2str
@@ -157,6 +158,13 @@ class KanjiGrid:
             self.menuAction = QAction("Generate Kanji Grid", mw, triggered=self.setup)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
+    class KanjiData:
+        char = ""
+        score = ""
+        pos = 0
+    
+    def generatejson(self, config, units):
+        self.json = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__)
 
     def generate(self, config, units, saveMode=False):
         def kanjitile(char, index, count=0, avg_interval=0, missing=False):
@@ -285,6 +293,8 @@ class KanjiGrid:
         hl.addWidget(sh)
         sp = QPushButton("Save Image", clicked=self.savepng)
         hl.addWidget(sp)
+        sj = QPushButton("Save JSON", clicked=lambda: self.savejson(config, units))
+        hl.addWidget(sj)
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
         self.win.setLayout(vl)
@@ -318,6 +328,20 @@ class KanjiGrid:
             self.wv.resize(self.wv.page().contentsSize().toSize())
             # the file will be saved after the page gets redrawn (KanjiGridWebView.eventFilter)
             self.wv.save_png = (fileName, oldsize)
+
+    def savejson(self, config, units):
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "JSON (*.json)")[0]
+        if fileName != "":
+            mw.progress.start(immediate=True)
+            if ".json" not in fileName:
+                fileName += ".json"
+            with open(fileName, 'w', encoding='utf-8') as fileOut:
+                self.time = time.time()
+                self.timepoint("JSON start")
+                self.generatejson(config, units)
+                fileOut.write(self.json)
+            mw.progress.finish()
+            showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
 
     def kanjigrid(self, config):
         dids = [config.did]
