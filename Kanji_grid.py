@@ -155,7 +155,7 @@ class SortOrder(enum.Enum):
 class KanjiGrid:
     def __init__(self, mw):
         if mw:
-            self.menuAction = QAction("Generate Kanji Grid", mw, triggered=self.setup)
+            self.menuAction = QAction("James' Generate Kanji Grid", mw, triggered=self.setup)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
     class KanjiData:
